@@ -144,7 +144,6 @@
         "try:\n",
         "    response = model.generate_content(prompt_chefe)\n",
         "\n",
-        "    # Passo 7: Ler as \"ideias\" do Chef!\n",
         "    print(\"\\n✨ Aqui estão algumas ideias do Chef Mágico para você! ✨\")\n",
         "    print(\"--------------------------------------------------\")\n",
         "    print(response.text)\n",
