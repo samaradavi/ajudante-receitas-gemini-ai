@@ -1,0 +1,165 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyO2D4gOxQJM5Y0/sKLxhtOC"
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install google-generativeai\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Qcnb34NmG1hh",
+        "outputId": "e2cd1549-6658-43c7-aeef-2eef2d1df6c7"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: google-generativeai in /usr/local/lib/python3.11/dist-packages (0.8.5)\n",
+            "Requirement already satisfied: google-ai-generativelanguage==0.6.15 in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (0.6.15)\n",
+            "Requirement already satisfied: google-api-core in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (2.24.2)\n",
+            "Requirement already satisfied: google-api-python-client in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (2.169.0)\n",
+            "Requirement already satisfied: google-auth>=2.15.0 in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (2.38.0)\n",
+            "Requirement already satisfied: protobuf in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (5.29.4)\n",
+            "Requirement already satisfied: pydantic in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (2.11.4)\n",
+            "Requirement already satisfied: tqdm in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (4.67.1)\n",
+            "Requirement already satisfied: typing-extensions in /usr/local/lib/python3.11/dist-packages (from google-generativeai) (4.13.2)\n",
+            "Requirement already satisfied: proto-plus<2.0.0dev,>=1.22.3 in /usr/local/lib/python3.11/dist-packages (from google-ai-generativelanguage==0.6.15->google-generativeai) (1.26.1)\n",
+            "Requirement already satisfied: googleapis-common-protos<2.0.0,>=1.56.2 in /usr/local/lib/python3.11/dist-packages (from google-api-core->google-generativeai) (1.70.0)\n",
+            "Requirement already satisfied: requests<3.0.0,>=2.18.0 in /usr/local/lib/python3.11/dist-packages (from google-api-core->google-generativeai) (2.32.3)\n",
+            "Requirement already satisfied: cachetools<6.0,>=2.0.0 in /usr/local/lib/python3.11/dist-packages (from google-auth>=2.15.0->google-generativeai) (5.5.2)\n",
+            "Requirement already satisfied: pyasn1-modules>=0.2.1 in /usr/local/lib/python3.11/dist-packages (from google-auth>=2.15.0->google-generativeai) (0.4.2)\n",
+            "Requirement already satisfied: rsa<5,>=3.1.4 in /usr/local/lib/python3.11/dist-packages (from google-auth>=2.15.0->google-generativeai) (4.9.1)\n",
+            "Requirement already satisfied: httplib2<1.0.0,>=0.19.0 in /usr/local/lib/python3.11/dist-packages (from google-api-python-client->google-generativeai) (0.22.0)\n",
+            "Requirement already satisfied: google-auth-httplib2<1.0.0,>=0.2.0 in /usr/local/lib/python3.11/dist-packages (from google-api-python-client->google-generativeai) (0.2.0)\n",
+            "Requirement already satisfied: uritemplate<5,>=3.0.1 in /usr/local/lib/python3.11/dist-packages (from google-api-python-client->google-generativeai) (4.1.1)\n",
+            "Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.11/dist-packages (from pydantic->google-generativeai) (0.7.0)\n",
+            "Requirement already satisfied: pydantic-core==2.33.2 in /usr/local/lib/python3.11/dist-packages (from pydantic->google-generativeai) (2.33.2)\n",
+            "Requirement already satisfied: typing-inspection>=0.4.0 in /usr/local/lib/python3.11/dist-packages (from pydantic->google-generativeai) (0.4.0)\n",
+            "Requirement already satisfied: grpcio<2.0dev,>=1.33.2 in /usr/local/lib/python3.11/dist-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai) (1.71.0)\n",
+            "Requirement already satisfied: grpcio-status<2.0.dev0,>=1.33.2 in /usr/local/lib/python3.11/dist-packages (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai) (1.71.0)\n",
+            "Requirement already satisfied: pyparsing!=3.0.0,!=3.0.1,!=3.0.2,!=3.0.3,<4,>=2.4.2 in /usr/local/lib/python3.11/dist-packages (from httplib2<1.0.0,>=0.19.0->google-api-python-client->google-generativeai) (3.2.3)\n",
+            "Requirement already satisfied: pyasn1<0.7.0,>=0.6.1 in /usr/local/lib/python3.11/dist-packages (from pyasn1-modules>=0.2.1->google-auth>=2.15.0->google-generativeai) (0.6.1)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.11/dist-packages (from requests<3.0.0,>=2.18.0->google-api-core->google-generativeai) (3.4.2)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.11/dist-packages (from requests<3.0.0,>=2.18.0->google-api-core->google-generativeai) (3.10)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.11/dist-packages (from requests<3.0.0,>=2.18.0->google-api-core->google-generativeai) (2.4.0)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.11/dist-packages (from requests<3.0.0,>=2.18.0->google-api-core->google-generativeai) (2025.4.26)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import google.generativeai as genai\n",
+        "from google.colab import userdata # Para pegar nossa chave do cofrinho do Colab!\n",
+        "\n",
+        "print(\"Olá! Sou seu Ajudante de Receitas! 🍎🥦🧀➡️🍝\")\n",
+        "print(\"--------------------------------------------------\")\n",
+        "try:\n",
+        "    api_key = userdata.get('GOOGLE_API_KEY')\n",
+        "    if not api_key: # Se não encontrou no cofrinho\n",
+        "        raise ValueError(\"Chave API não encontrada nos Secrets do Colab. Verifique o Passo 2.\")\n",
+        "    genai.configure(api_key=api_key)\n",
+        "    print(\"🔑 Chave mágica do Google AI carregada com sucesso do cofrinho do Colab!\")\n",
+        "except Exception as e:\n",
+        "    print(f\"❌ Oh não! Algo deu errado ao pegar ou configurar a chave mágica: {e}\")\n",
+        "    print(\"   Por favor, verifique se você adicionou a GOOGLE_API_KEY nos 'Secrets' (ícone de chave 🔑 à esquerda).\")\n",
+        "    print(\"   O programa pode não funcionar sem a chave. Tente rodar a célula de novo após verificar.\")\n",
+        "print(\"\\n--------------------------------------------------\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "cNxbtiVHG99y",
+        "outputId": "cfd0a168-1636-4a82-be61-06ae381aab53"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Olá! Sou seu Ajudante de Receitas! 🍎🥦🧀➡️🍝\n",
+            "--------------------------------------------------\n",
+            "❌ Oh não! Algo deu errado ao pegar ou configurar a chave mágica: Notebook does not have access to secret GOOGLE_API_KEY\n",
+            "   Por favor, verifique se você adicionou a GOOGLE_API_KEY nos 'Secrets' (ícone de chave 🔑 à esquerda).\n",
+            "   O programa pode não funcionar sem a chave. Tente rodar a célula de novo após verificar.\n",
+            "\n",
+            "--------------------------------------------------\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "ingredientes_str = input(\"Oi! 👋 Me diga quais ingredientes você tem na geladeira (separe com vírgula, por exemplo: tomate, queijo, pão): \")\n",
+        "prompt_chefe = f\"\"\"\n",
+        "Você é um chef de cozinha muito criativo e adora ajudar a não desperdiçar comida.\n",
+        "Baseado APENAS nos seguintes ingredientes: {ingredientes_str}.\n",
+        "\n",
+        "Sugira 2 ou 3 receitas SIMPLES e RÁPIDAS que podem ser feitas com ELES.\n",
+        "Para cada receita:\n",
+        "1. Dê um nome divertido para a receita.\n",
+        "2. Liste APENAS os ingredientes da lista fornecida que serão usados.\n",
+        "3. Dê um passo a passo bem simples de como fazer.\n",
+        "\n",
+        "Seja amigável e direto ao ponto!\n",
+        "Se não for possível criar receitas com os ingredientes fornecidos, apenas diga \"Puxa, com esses ingredientes não consigo pensar em nenhuma receita simples agora. Que tal adicionar mais alguma coisa?\".\n",
+        "\"\"\""
+      ],
+      "metadata": {
+        "id": "1FkeLHRfHR5v"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model = genai.GenerativeModel('gemini-1.5-flash-latest')\n",
+        "print(\"\\n🍳 Hmmm, estou pensando em algumas receitas deliciosas para você...\")\n",
+        "print(\"   Isso pode levar alguns segundinhos, como esperar o bolo assar! 🎂\")\n",
+        "\n",
+        "try:\n",
+        "    response = model.generate_content(prompt_chefe)\n",
+        "\n",
+        "    # Passo 7: Ler as \"ideias\" do Chef!\n",
+        "    print(\"\\n✨ Aqui estão algumas ideias do Chef Mágico para você! ✨\")\n",
+        "    print(\"--------------------------------------------------\")\n",
+        "    print(response.text)\n",
+        "    print(\"--------------------------------------------------\")\n",
+        "    print(\"\\nBom apetite! E lembre-se: cozinhar é uma aventura! 🎉\")\n",
+        "\n",
+        "except Exception as e:\n",
+        "    print(f\"❌ Ops! O Chef Mágico parece estar ocupado ou algo deu errado: {e}\")\n",
+        "    print(\"   Tente novamente mais tarde ou verifique sua conexão. Às vezes, a IA pode estar muito ocupada.\")"
+      ],
+      "metadata": {
+        "id": "gbNoIwSVHbo-"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
